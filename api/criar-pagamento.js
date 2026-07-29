@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
 
-const PRECO = 64.90; // R$ por camiseta
+const PRECO = 1.00; // TEMP: valor de teste, voltar pra 64.90 depois
 
 function gerarOrderNsu() {
   return `IPADAYCAM-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
