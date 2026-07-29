@@ -49,7 +49,10 @@ Não precisa de API key, a InfinitePay autentica só pelo `handle` no corpo da
 requisição (confirmado na documentação oficial deles).
 
 4. Crie uma planilha Google nova com a aba "Página1" e cabeçalho:
-   `Data | Nome | WhatsApp | Tamanhos (ex: G x2, GG x1) | Quantidade total | Valor | Status | Order NSU | Retirado?`
+   `Data | Nome | WhatsApp | Tamanho | Quantidade | Valor | Status | Order NSU | Retirado?`
+   Cada pedido gera uma linha POR TAMANHO (não uma linha por pedido), todas
+   compartilhando o mesmo Order NSU, pra dar pra fazer tabela dinâmica por
+   tamanho depois.
 5. Compartilhe a planilha com o e-mail da Service Account (permissão de Editor).
 6. Configure o domínio `camisetas.foradalei.com.br` apontando pra esse projeto na
    Vercel (Settings > Domains).

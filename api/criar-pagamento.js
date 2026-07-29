@@ -6,29 +6,31 @@ function gerarOrderNsu() {
   return `IPADAYCAM-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 }
 
-async function registrarPendente(orderNsu, d) {
+// Uma linha por tamanho (não por pedido), pra dar pra fazer tabela dinâmica
+// por tamanho depois. Todas as linhas do mesmo pedido compartilham o Order NSU.
+async function registrarPendente(orderNsu, d, itens) {
   const auth = new google.auth.GoogleAuth({
     credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT),
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
   });
   const sheets = google.sheets({ version: 'v4', auth });
+  const dataHora = new Date().toLocaleString('pt-BR');
+  const values = itens.map((it) => [
+    dataHora,                             // A Data
+    d.nome,                               // B Nome
+    d.whatsapp,                           // C WhatsApp
+    it.tamanho,                           // D Tamanho
+    it.quantidade,                        // E Quantidade
+    `R$ ${(it.quantidade * PRECO).toFixed(2).replace('.', ',')}`, // F Valor
+    'AGUARDANDO PAGAMENTO',               // G Status
+    orderNsu,                             // H Order NSU
+    '',                                   // I Retirado?
+  ]);
   await sheets.spreadsheets.values.append({
     spreadsheetId: process.env.GOOGLE_SHEET_ID,
     range: 'Página1!A:I',
     valueInputOption: 'USER_ENTERED',
-    requestBody: {
-      values: [[
-        new Date().toLocaleString('pt-BR'), // A Data
-        d.nome,                              // B Nome
-        d.whatsapp,                          // C WhatsApp
-        d.itensTexto,                        // D Tamanhos (ex: "G x2, GG x1")
-        d.quantidadeTotal,                   // E Quantidade total
-        `R$ ${d.valorTotal.toFixed(2).replace('.', ',')}`, // F Valor
-        'AGUARDANDO PAGAMENTO',              // G Status
-        orderNsu,                            // H Order NSU
-        '',                                  // I Retirado?
-      ]],
-    },
+    requestBody: { values },
   });
 }
 
@@ -58,16 +60,13 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Escolha ao menos 1 camiseta, em algum tamanho.' });
     }
 
-    const quantidadeTotal = itens.reduce((soma, it) => soma + it.quantidade, 0);
-    const valorTotal = quantidadeTotal * PRECO;
-    const itensTexto = itens.map((it) => `${it.tamanho} x${it.quantidade}`).join(', ');
-
     const orderNsu = gerarOrderNsu();
 
-    // Grava a linha como "aguardando pagamento" ANTES de ir pro checkout,
-    // o webhook depois só atualiza o status quando o pagamento confirmar.
+    // Grava uma linha por tamanho, como "aguardando pagamento", ANTES de ir
+    // pro checkout. O webhook depois acha todas as linhas desse Order NSU e
+    // atualiza o status quando o pagamento confirmar.
     try {
-      await registrarPendente(orderNsu, { nome: d.nome, whatsapp: d.whatsapp, itensTexto, quantidadeTotal, valorTotal });
+      await registrarPendente(orderNsu, { nome: d.nome, whatsapp: d.whatsapp }, itens);
     } catch (e) {
       console.error('Falha ao gravar pendente no Sheets:', e.message);
     }
