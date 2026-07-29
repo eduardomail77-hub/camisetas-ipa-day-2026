@@ -135,7 +135,7 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
 
       <div class="pickup"><b>Retirada no evento.</b> Sua camiseta é entregue no dia 15 de agosto, no IPA Day 2026, na Fora da Lei Pub.</div>
 
-      <div class="total"><span class="lbl">Total</span><span class="val" id="totalval">R$ 64,90</span></div>
+      <div class="total"><span class="lbl">Total</span><span class="val" id="totalval">R$ 0,00</span></div>
       <button class="buy" id="btn">Comprar agora</button>
       <div class="alerta" id="alerta"></div>
       <div class="pay">🔒 Pagamento seguro via InfinitePay · Pix ou cartão</div>
@@ -198,5 +198,7 @@ document.getElementById('btn').addEventListener('click', function(){
   .catch(function(e){ btn.disabled=false; btn.textContent='Comprar agora';
     alerta.textContent='⚠️ '+((e&&e.message&&e.message!=='erro')?e.message:'Erro ao conectar com o pagamento. Tente novamente.'); alerta.classList.add('show'); });
 });
+
+atualiza();
 </script>
 </body></html>
