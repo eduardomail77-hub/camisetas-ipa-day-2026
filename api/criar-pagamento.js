@@ -41,6 +41,9 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Método não permitido' });
 
+  // Vendas encerradas — não aceitar novos pedidos mesmo via chamada direta à API.
+  return res.status(410).json({ error: 'Vendas encerradas.' });
+
   try {
     const d = req.body;
 

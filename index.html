@@ -76,8 +76,7 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
 
   <div class="card">
     <div class="imgwrap">
-      <span class="badge">VENDA SOMENTE ONLINE</span>
-      <span class="deadline">Até 01/08</span>
+      <span class="badge" style="background:#7a3a2b;color:#f2a893;">VENDAS ENCERRADAS</span>
       <img src="./camiseta-hero.jpg" alt="Camiseta oficial IPA Day 2026, Metal Edition">
     </div>
     <div class="pad">
@@ -86,7 +85,7 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
       <div class="priceRow">
         <span class="now">R$ 64,90</span>
       </div>
-      <span class="scar">🔥 Edição limitada, venda só até 01 de agosto</span>
+      <span class="scar">Vendas online encerradas</span>
 
       <hr>
 
@@ -104,41 +103,9 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
   </div>
 
   <div class="card">
-    <div class="pad">
-      <h1 style="font-size:21px">Faça seu pedido</h1>
-
-      <label class="l">Nome completo</label>
-      <input type="text" id="nome" placeholder="Seu nome">
-
-      <label class="l">WhatsApp</label>
-      <input type="text" id="whats" placeholder="(51) 9...">
-
-      <label class="l">Tabela de medidas (cm)</label>
-      <table class="sizetable">
-        <tr><th>Tamanho</th><td>PP</td><td>P</td><td>M</td><td>G</td><td>GG</td><td>XG</td><td>XXG</td><td>Nobre</td></tr>
-        <tr><th>Comprimento</th><td>68</td><td>70</td><td>72</td><td>74</td><td>76</td><td>79</td><td>81</td><td>93</td></tr>
-        <tr><th>Largura</th><td>48</td><td>52</td><td>54</td><td>56</td><td>58</td><td>61</td><td>71</td><td>83</td></tr>
-        <caption>Pode haver variação de até 2cm dependendo do modelo.</caption>
-      </table>
-
-      <label class="l">Escolha o(s) tamanho(s) e a quantidade</label>
-      <div id="sizes">
-        <div class="sizerow" data-size="PP"><b>PP</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="P"><b>P</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="M"><b>M</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="G"><b>G</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="GG"><b>GG</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="XG"><b>XG</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="XXG"><b>XXG</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-        <div class="sizerow" data-size="Nobre"><b>Nobre</b><div class="qty"><button type="button" class="mq">−</button><span class="qv">0</span><button type="button" class="pq">+</button></div></div>
-      </div>
-
-      <div class="pickup"><b>Retirada no evento.</b> Sua camiseta é entregue no dia 15 de agosto, no IPA Day 2026, na Fora da Lei Pub.</div>
-
-      <div class="total"><span class="lbl">Total</span><span class="val" id="totalval">R$ 0,00</span></div>
-      <button class="buy" id="btn">Comprar agora</button>
-      <div class="alerta" id="alerta"></div>
-      <div class="pay">🔒 Pagamento seguro via InfinitePay · Pix ou cartão</div>
+    <div class="pad" style="text-align:center;">
+      <h1 style="font-size:21px">Vendas encerradas</h1>
+      <p style="color:#c9c6ba;font-size:15.5px;margin-top:12px;">As vendas online da camiseta oficial do IPA Day 2026 estão encerradas. Quem já comprou retira normalmente no dia 15 de agosto, na Fora da Lei Pub.</p>
     </div>
   </div>
 
@@ -147,58 +114,4 @@ input[type=text]:focus{outline:none;border-color:var(--accent)}
   </div>
 </div>
 
-<script>
-var PRECO = 64.90;
-var totalval = document.getElementById('totalval');
-var alerta = document.getElementById('alerta');
-
-function fmt(n){ return 'R$ ' + n.toFixed(2).replace('.', ','); }
-
-function itensSelecionados(){
-  var itens = [];
-  document.querySelectorAll('.sizerow').forEach(function(row){
-    var q = parseInt(row.querySelector('.qv').textContent, 10) || 0;
-    if(q > 0) itens.push({ tamanho: row.getAttribute('data-size'), quantidade: q });
-  });
-  return itens;
-}
-function totalGeral(){
-  return itensSelecionados().reduce(function(soma, it){ return soma + it.quantidade * PRECO; }, 0);
-}
-function atualiza(){ totalval.textContent = fmt(totalGeral()); }
-
-document.querySelectorAll('.sizerow').forEach(function(row){
-  var qv = row.querySelector('.qv');
-  row.querySelector('.pq').addEventListener('click', function(){
-    var q = parseInt(qv.textContent, 10) || 0;
-    if(q < 10){ qv.textContent = q + 1; atualiza(); }
-  });
-  row.querySelector('.mq').addEventListener('click', function(){
-    var q = parseInt(qv.textContent, 10) || 0;
-    if(q > 0){ qv.textContent = q - 1; atualiza(); }
-  });
-});
-
-document.getElementById('btn').addEventListener('click', function(){
-  var nome = document.getElementById('nome').value.trim();
-  var whats = document.getElementById('whats').value.trim();
-  var itens = itensSelecionados();
-  alerta.classList.remove('show');
-  if(!nome){ alerta.textContent='⚠️ Informe seu nome.'; alerta.classList.add('show'); return; }
-  if(whats.length<8){ alerta.textContent='⚠️ Informe um WhatsApp válido.'; alerta.classList.add('show'); return; }
-  if(itens.length===0){ alerta.textContent='⚠️ Escolha ao menos 1 camiseta, em algum tamanho.'; alerta.classList.add('show'); return; }
-
-  var valorTotal = totalGeral();
-  if(typeof fbq!=='undefined'){ fbq('track','InitiateCheckout',{value:valorTotal,currency:'BRL',content_name:'Camiseta IPA Day 2026'}); }
-  var btn=this; btn.disabled=true; btn.textContent='⏳ Indo pro pagamento...';
-  fetch('/api/criar-pagamento',{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({nome:nome,whatsapp:whats,itens:itens})})
-  .then(function(r){return r.json();})
-  .then(function(d){ if(d.url){ window.location.href=d.url; } else { throw new Error(d.error||'erro'); } })
-  .catch(function(e){ btn.disabled=false; btn.textContent='Comprar agora';
-    alerta.textContent='⚠️ '+((e&&e.message&&e.message!=='erro')?e.message:'Erro ao conectar com o pagamento. Tente novamente.'); alerta.classList.add('show'); });
-});
-
-atualiza();
-</script>
 </body></html>
